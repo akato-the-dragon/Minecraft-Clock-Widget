@@ -18,8 +18,6 @@ class ClockWidget:
         self._time_zone = clock_config.time_zone
         self._am_format = clock_config.am_format
 
-        self._nether_end_mode = clock_config.nether_end_mode
-
         self._inertia = InertialNumber(friction=0.75, force_multiplier=0.25)
         self._inertia.apply_force(250)
 

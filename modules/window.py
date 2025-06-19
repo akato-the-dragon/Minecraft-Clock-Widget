@@ -1,7 +1,7 @@
 from modules.font import get_font
 from typing import Optional, Union
 from modules.clock_widget import ClockWidget
-from modules.config import Config, save_config
+from modules.config import Config
 import win32api
 import win32con
 import win32gui
@@ -40,6 +40,7 @@ class MainWindow:
 
     def __setup(self) -> None:
         pg.display.set_caption(self._title)
+        pg.display.set_icon(pg.image.load("icon.ico"))
 
         hwnd = pg.display.get_wm_info()["window"]
 
