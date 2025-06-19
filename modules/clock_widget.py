@@ -14,7 +14,7 @@ class ClockWidget:
         self._w, self._h = self._size = self._original_size = size
 
         self._clock_state_images = get_clock_state_images()
-        self._clock_state_offset = 43200
+        self._clock_state_offset = 32400
         self._time_zone = clock_config.time_zone
         self._am_format = clock_config.am_format
 
@@ -61,8 +61,8 @@ class ClockWidget:
     def __render(self) -> pg.Surface:
         surface = pg.Surface(self._size, pg.SRCALPHA)
 
-        clock = pg.transform.scale(self.__get_clock_state(), (self._w / 1.25, self._h / 1.25))
-        clock_rect = clock.get_rect(center=(self._w / 2, self._h / 2 - 16))
+        clock = pg.transform.scale(self.__get_clock_state(), (self._w / 1.5, self._h / 1.5))
+        clock_rect = clock.get_rect(center=(self._w / 2, self._h / 2 - self._h / 16))
 
         surface.blit(clock, clock_rect)
 

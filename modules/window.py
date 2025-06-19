@@ -9,8 +9,8 @@ import pygame as pg
 
 
 class MainWindow:
-    def __init__(self, title: str = "Title", flags: int = 0,
-                 fps: int = 60, config: Optional[Config] = None) -> None:
+    def __init__(self, title: str = "Title", flags: int = 0, fps: int = 60,
+                 vsync: bool = False, config: Optional[Config] = None) -> None:
 
         ... if pg.display.get_init() else pg.display.init()
         ... if pg.font.get_init() else pg.font.init()
@@ -21,8 +21,9 @@ class MainWindow:
         self._title = title
         self._flags = flags
         self._fps = fps
+        self._vsync = vsync
 
-        self._window = pg.display.set_mode(self._size, self._flags)
+        self._window = pg.display.set_mode(self._size, self._flags, vsync=self._vsync)
         self._clock = pg.time.Clock()
 
         self._is_running = False
@@ -41,6 +42,8 @@ class MainWindow:
     def __setup(self) -> None:
         pg.display.set_caption(self._title)
         pg.display.set_icon(pg.image.load("icon.ico"))
+
+        self._clock_widget.set_size_scale(self._config.position.size_scale)
 
         hwnd = pg.display.get_wm_info()["window"]
 
@@ -62,6 +65,9 @@ class MainWindow:
 
     def set_top_most(self, hwnd: int) -> None:
         win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOSIZE)
+    
+    def unset_top_most(self, hwnd: int) -> None:
+        win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0, win32con.SWP_NOSIZE | win32con.SWP_NOMOVE)
 
     def start_loop(self, debug: bool = False) -> None:
         self._is_running = True
@@ -99,6 +105,19 @@ class MainWindow:
                     
                     if mods & pg.KMOD_CTRL and event.key == pg.K_l:
                         self._config.position.lock_widget = not self._config.position.lock_widget
+                    
+                    if mods & pg.KMOD_CTRL and event.key == pg.K_t:
+                        hwnd = pg.display.get_wm_info()["window"]
+
+                        if self._config.lay_top_most:
+                            self.unset_top_most(hwnd)
+                            self._config.lay_top_most = False
+                        else:
+                            self.set_top_most(hwnd)
+                            self._config.lay_top_most = True
+                    
+                    if mods & pg.KMOD_CTRL and event.key == pg.K_ESCAPE:
+                        self.close()
 
                     if mods & pg.KMOD_CTRL and event.key == pg.K_p and debug:
                         self._show_fps = not self._show_fps
@@ -109,7 +128,7 @@ class MainWindow:
             self._window.fill((0, 0, 255))
 
             if self._show_fps:
-                font = get_font(48)
+                font = get_font(36)
                 text = font.render(f"Fps: {round(self._clock.get_fps(), 2)}", False, (255, 0, 0))
                 text_rect = text.get_rect()
                 text_rect.bottomleft = (15, self._h - 15)

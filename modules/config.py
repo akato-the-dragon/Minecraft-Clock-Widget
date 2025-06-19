@@ -30,7 +30,8 @@ class Config:
     position: Position = field(default_factory=Position)
     clock: Clock = field(default_factory=Clock)
     lay_top_most: bool = True
-    fps: int = 60
+    fps: int = 30
+    vsync: bool = False
     debug: bool = False
 
 

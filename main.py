@@ -11,9 +11,10 @@ def main_body() -> None:
     title = "Minecraft clock widget"
     flags = NOFRAME | DOUBLEBUF
     fps = config.fps
+    vsync = config.vsync
     debug = config.debug
 
-    main_window = MainWindow(title, flags, fps, config)
+    main_window = MainWindow(title, flags, fps, vsync, config)
     main_window.start_loop(debug)
 
     save_config(config)
