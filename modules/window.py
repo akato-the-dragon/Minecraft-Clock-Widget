@@ -43,8 +43,6 @@ class MainWindow:
         pg.display.set_caption(self._title)
         pg.display.set_icon(pg.image.load("icon.ico"))
 
-        self._clock_widget.set_size_scale(self._config.position.size_scale)
-
         hwnd = pg.display.get_wm_info()["window"]
 
         self.set_transparent_color(hwnd, (0, 0, 255))
