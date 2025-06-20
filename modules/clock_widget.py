@@ -14,7 +14,7 @@ class ClockWidget:
         self._w, self._h = self._size = self._original_size = size
 
         self._clock_state_images = get_clock_state_images()
-        self._clock_state_offset = 32400
+        self._clock_state_offset = 37800
         self._time_zone = clock_config.time_zone
         self._am_format = clock_config.am_format
 
