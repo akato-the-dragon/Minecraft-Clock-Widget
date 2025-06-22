@@ -1,5 +1,5 @@
 from modules.font import get_font
-from typing import Optional, Union
+from typing import Optional, Union, List
 from modules.clock_widget import ClockWidget
 from modules.config import Config
 import win32api
@@ -30,6 +30,9 @@ class MainWindow:
         self._show_fps = False
         self._show_hitboxes = False
 
+        self._update_rects: List[pg.Rect] = []
+        self._old_update_rects: List[pg.Rect] = []
+
         self._config = config
         
         if self._config:
@@ -52,6 +55,13 @@ class MainWindow:
 
         allowed_events = [pg.QUIT, pg.MOUSEMOTION, pg.MOUSEBUTTONDOWN, pg.MOUSEBUTTONUP, pg.KEYDOWN, pg.KEYUP]
         pg.event.set_allowed(allowed_events)
+
+        self._update_rects.append(pg.Rect(0, 0, self._w, self._h))
+
+    def __clear_update_rects(self) -> None:
+        self._old_update_rects = []
+        self._old_update_rects = self._update_rects
+        self._update_rects = []
 
     def set_config(self, config: Config) -> None:
         self._config = config
@@ -132,14 +142,17 @@ class MainWindow:
                 text_rect.bottomleft = (15, self._h - 15)
 
                 self._window.blit(text, text_rect)
+                self._update_rects.append(text_rect)
             
             if self._show_hitboxes:
                 pg.draw.rect(self._window, (255, 0, 0), self._clock_widget.rect, 2)
 
             self._clock_widget.update(dt)
             self._clock_widget.build(self._window)
+            self._update_rects.append(self._clock_widget.rect)
 
-            pg.display.flip()
+            pg.display.update(self._update_rects + self._old_update_rects)
+            self.__clear_update_rects()
 
     def close(self) -> None:
         self._is_running = False
